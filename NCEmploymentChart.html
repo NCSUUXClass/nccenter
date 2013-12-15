@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NC Employment data 1992-2012 with Google Motion Charts</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      var industries = [];
+      industries[0]  = "All (takes a while)";
+      industries[1]  = "Construction";
+      industries[2]  = "Education and Health Services";
+      industries[3]  = "Financial Activities";
+      industries[4]  = "Goods-Producing";
+      industries[5]  = "Information";
+      industries[6]  = "Leisure and Hospitality";
+      industries[7]  = "Manufacturing";
+      industries[8]  = "Natural Resources and Mining";
+      industries[9]  = "Other Services";
+      industries[10] = "Professional and Business Services";
+      industries[11] = "Public Administration";
+      industries[12] = "Service-Providing";
+      industries[13] = "Trade, Transportation and Utilities";
+      industries[14] = "Unclassified";
+
+
+      var datasets   = [];  // FEEL FREE TO PASTE THESE LINKS IN YOUR BROWSER AND EXPLORE THE DATA IN THE SPREADSHEETS
+      datasets[0]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdG9HTlRLdTNNbGJtOFFvQ2dqQkNnUVE&usp=sharing";
+      datasets[1]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdEhuWk8yX1hpU2tmY2FPbmVOMTdNYlE&usp=sharing";
+      datasets[2]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGhMTG8zdmRab0xMbXVKTkVoTEZvZFE&usp=sharing";
+      datasets[3]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGZ0X3FwcXpZTnd5TjAwTE9qU1Zkc0E&usp=sharing";
+      datasets[4]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGtLOGZCUU92QTJHMFFmZkgxVmZZdnc&usp=sharing";
+      datasets[5]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGhXemFyZW5PRWt3RXRqcmhFNWdlcVE&usp=sharing";
+      datasets[6]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdFFoT2hSOHc2dDN6QzRDZ1MwcVdJc2c&usp=sharing";
+      datasets[7]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGgwOFZwNTVPVHdKUjlnTF85ckJMa0E&usp=sharing";
+      datasets[8]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdC1IbU83WnRZWTZ3aFVmU1prRkdCNVE&usp=sharing";
+      datasets[9]  = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdEJJWThwZV9Uc0JBNzlhLU9UYTZGZmc&usp=sharing";
+      datasets[10] = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdG0wMktNUmo1TjJYNnhjWTVWdkY4Znc&usp=sharing";
+      datasets[11] = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGlobVkxbDI2U2tPMHZ4emJ3dW1tLUE&usp=sharing";
+      datasets[12] = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdDRvOGtya1dSc0kwUUtWcWI0VVlnRFE&usp=sharing";
+      datasets[13] = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdDdTd0FIMWRsLUQ2RGxKWG1xNGlKdWc&usp=sharing";
+      datasets[14] = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdEg2OURocWc2RF9KUGRDYnVmNnpPTkE&usp=sharing";
+      
+
+
+      google.load('visualization', '1', {'packages':['motionchart']});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        display_loading_indicator();
+        display_selector(1);
+        var query = new google.visualization.Query(datasets[1]);
+        query.send(handleQueryResponse);
+      }
+
+      function select_sector(dataset_index){
+        display_loading_indicator();
+      	var query = new google.visualization.Query(datasets[dataset_index]);
+        query.send(handleQueryResponse);
+      }
+
+      function handleQueryResponse(response) {
+      	if (response.isError()) {
+      	  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      	  return;
+      	}
+
+      	var data = response.getDataTable();
+      	var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
+      	var options = {};
+      	options['state'] = '{"xAxisOption":"2","xZoomedIn":false,"sizeOption":"6","yZoomedIn":false,"xLambda":1,"colorOption":"8","playDuration":5000,"orderedByY":false,"yZoomedDataMax":-75.673954,"showTrails":false,"iconType":"BUBBLE","orderedByX":false,"iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMin":-84.009698,"dimensions":{"iconDimensions":["dim0"]},"xZoomedDataMax":36.497391,"nonSelectedAlpha":0.4,"yAxisOption":"3","time":"1992","yLambda":1,"xZoomedDataMin":34.024762,"uniColorForNonSelected":false}';
+
+
+      	options['showXMetricPicker'] = false;
+      	options['showYMetricPicker'] = false;
+      	options['showXScalePicker'] = false;
+      	options['showYScalePicker'] = false;
+        options['showChartButtons'] = false;
+      	options['width'] = 850;
+      	options['height'] = 400;
+	
+        chart.draw(data, options);
+      }
+
+      function display_loading_indicator(){
+        // This gif comes from http://www.jimpunk.net/Loading/wp-content/uploads/loading1.gif
+        document.getElementById("chart_div").innerHTML = "<img src='images/loading1.gif' alt='loading...'/>";
+      }
+
+      function display_selector(checked){
+        var formHTML = "<form>";
+        for (var i=0; i<industries.length; i++){
+        	formHTML +="<input type=\"radio\" name=\"industry\" value=" + i
+        	       + "\" onclick=\"select_sector(\'" + i + "\')\" "
+        	       + ((checked==i)?"checked":"") + ">" + industries[i] + "<br>";
+        }
+
+        formHTML += "</form>";
+
+        document.getElementById("selector_div").innerHTML = formHTML;
+      }
+  	</script>
+  </head>
+
+  <body>
+    <h2>NC Employment data 1992-2012 with Google Motion Charts</h2>
+    <table>
+      <tr>
+        <td valign="top" style="vertical-align:text-top;white-space:nowrap">
+          <h3>Choose an Industry Sector and press
+          <br>"Play" to show changes over time</h3>
+          <div id="selector_div"></div>
+        </td>
+        <td>
+          <div id="chart_div" style="width: 1000px; height: 500px;"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          This interactive visualization was created with
+          <a href='https://developers.google.com/chart/interactive/docs/gallery/motionchart'>Google Motion Charts</a>, which uses Flash,
+          which doesn't work on mobile. 
+          <br>The employment + wage data from
+          <a href='http://esesc23.esc.state.nc.us/d4/QCEWSelection.aspx'>http://esesc23.esc.state.nc.us/d4/QCEWSelection.aspx</a> was
+          specially prepared for this demo 
+          <br> (not a live data source, see html source for details).
+          <br> The data bubbles represent NC counties at their approximate
+          geo locations, and the x and y axes are labeled with longitude and latitude.
+          <br> There doesn't seem to be a way to turn off axis labels.
+          <br> Although Google Motion Charts look best when the the bubbles move around
+          during animation, here they can only change size and color.
+          <br>Unfortunately, I couldn't find a way to display a map of North Carolina in the background. 
+          <br>
+          <br>Please ignore the query timeout errors. If the demo doesn't work in Internet Explorer, please try Chrome or Firefox.
+	  <div id="debug_info"></div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

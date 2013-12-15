@@ -1,0 +1,138 @@
+
+<html>
+  <head>
+    <link rel="stylesheet" href="County_css.css" type="text/css">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      var all_data = "https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdDZ4N1BhWVpaS1pZMGNadVQ4aFk0RXc&usp=sharing";
+
+      var rtime = new Date(1, 1, 2000, 12,00,00);
+      var timeout = false;
+      var delta = 200;
+      window.addEventListener('resize', resizeFunc);
+
+      var _GET = getURLVars();
+      var county_name = _GET["county"];
+
+
+      if(!county_name || county_name.length === 0) // providing a default value
+        county_name = "Wake";
+
+
+      google.load('visualization', '1', {'packages':['motionchart']});
+      google.setOnLoadCallback(drawChart);
+
+
+      function display_loading_indicator(){
+         document.getElementById("title_div").innerHTML = "<h2>" + county_name  + " County Employment Data by Industry from 1990 to 2012</h2>";
+         document.getElementById("chart_div").innerHTML = "<img src='images/loading1.gif' alt='loading...'/>"
+           + "<h2>NOTE: Please wait. Motion charts take a while to load. If you see a query timeout warning, press OK. Visualization will still load, promise!</h2>";
+      }
+
+      function drawChart() {
+        display_loading_indicator();
+        var query = new google.visualization.Query(all_data);
+        query.setQuery("WHERE G LIKE '" + county_name + "'");
+        query.send(handleQueryResponse);
+      }
+
+
+      function handleQueryResponse(response) {
+        if (response.isError()) {
+          alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+          return;
+        }
+
+        var chartWidth = getWindowSize()["x"];
+        var chartHeight = getWindowSize()["y"];
+        if (chartWidth >= chartHeight * 2){
+          chartHeight *= 0.8;
+          chartWidth = chartHeight * 2;
+        }
+        else {
+          chartWidth *= 0.8;
+          chartHeight = chartWidth / 2;
+        }
+
+        document.getElementById('chart_div').setAttribute("style","width:" + chartWidth + "px");
+        document.getElementById('chart_div').setAttribute("style","height:" + chartHeight + "px");
+
+	      var data = response.getDataTable();
+	      var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
+	      var options = {};
+	      options['state'] = '{"yZoomedDataMin":0,"yZoomedIn":false,"iconKeySettings":[{"key":{"dim0":"Animal Production and Aquaculture"}},{"key":{"dim0":"Insurance Carriers & Related Activities"}},{"key":{"dim0":"Telecommunications"}},{"key":{"dim0":"Motion Picture & Sound Recording Ind"}},{"key":{"dim0":"Paper Manufacturing"}},{"key":{"dim0":"Hospitals"}},{"key":{"dim0":"Furniture and Related Product Mfg"}},{"key":{"dim0":"Crop Production"}},{"key":{"dim0":"Financial Investment & Related Activity"}},{"key":{"dim0":"Performing Arts and Spectator Sports"}},{"key":{"dim0":"Internet Publishing and Broadcasting"}},{"key":{"dim0":"Petroleum & Coal Products Manufacturing"}},{"key":{"dim0":"Forestry and Logging"}},{"key":{"dim0":"Textile Mills"}}],"xLambda":1,"playDuration":22055.555555555555,"yZoomedDataMax":3000,"xAxisOption":"_ALPHABETICAL","time":"1990","nonSelectedAlpha":0.4,"xZoomedDataMin":0,"showTrails":false,"duration":{"timeUnit":"Y","multiplier":1},"iconType":"VBAR","dimensions":{"iconDimensions":["dim0"]},"orderedByY":false,"colorOption":"5","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"2","xZoomedDataMax":13,"sizeOption":"_UNISIZE","xZoomedIn":false,"orderedByX":true}';
+
+        //options['showXMetricPicker'] = false;
+        //options['showYMetricPicker'] = false;
+        //options['showXScalePicker'] = false;
+        //options['showYScalePicker'] = false;
+        options['width'] = chartWidth;
+        options['height'] = chartHeight;
+
+
+        chart.draw(data, options);
+      }
+
+    function resizeFunc() {
+    // http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-or-resize-event-and-only-then-perform-an-ac
+      rtime = new Date();
+      if (timeout === false) {
+        timeout = true;
+        setTimeout(resizeend, delta);
+      }
+    }
+
+    function resizeend() {
+      if (new Date() - rtime < delta) {
+        setTimeout(resizeend, delta);
+      } else {
+        timeout = false;
+        //alert('Done resizing');
+        drawChart();
+      }
+    }
+
+	  function getURLVars() {
+	      // http://papermashup.com/read-url-get-variables-withjavascript/
+	      var vars = {};
+	      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+	          vars[key] = value;
+	      });
+
+	      return vars;
+	  }
+
+    function getWindowSize(){
+      var w = window, d = document, e = d.documentElement, g = d.getElementsByTagName('body')[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      //alert(x);
+      var result = {};
+      result["x"] = x;
+      result["y"] = y;
+      return result;
+    }
+
+    </script>
+  </head>
+
+  <body>
+    <center>
+      <table>
+        <tr>
+          <td><div id="title_div" style="width: 1000px; height: 50px;"></div></td>
+        </tr>
+      </table>
+      <div id="chart_div" style="width: 1000px; height: 500px;"></div>
+      
+      <p><button onclick="window.history.back()">&laquo; back to visualization selector</button>
+         <br>
+         Data source: <a href="https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdDZ4N1BhWVpaS1pZMGNadVQ4aFk0RXc&usp=sharing">
+         NC_counties_employment_data</a> spreadsheet in Google Docs.
+         Raw data sourced from <a href="http://esesc23.esc.state.nc.us/d4/QCEWSelection.aspx">http://esesc23.esc.state.nc.us/d4/QCEWSelection.aspx</a>
+      </p>
+    </center>
+  </body>
+</html>

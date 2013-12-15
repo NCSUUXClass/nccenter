@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="County_css.css" type="text/css">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      var rtime = new Date(1, 1, 2000, 12,00,00);
+      var timeout = false;
+      var delta = 200;
+      window.addEventListener('resize', resizeFunc);
+   
+      var _GET = getURLVars();
+      var sector_name = _GET["sector"].replace(/_/g," ");
+     
+
+      if(!sector_name || sector_name.length === 0) // providing a default value
+        sector_name = "Hospitals";
+
+
+      google.load('visualization', '1', {'packages':['motionchart']});
+      google.setOnLoadCallback(drawChart);
+
+
+      function display_loading_indicator(){
+         document.getElementById("title_div").innerHTML = "<h2>" + "NC employment data 1990-2012, NAICS subsector: " + sector_name + "</h2>";
+         document.getElementById("chart_div").innerHTML = "<img src='images/loading1.gif' alt='loading...'/>";
+      }
+
+      function drawChart() {
+        display_loading_indicator();
+        var query = new google.visualization.Query('https://docs.google.com/spreadsheet/ccc?key=0Am6F8HNNN1PBdGJDUG0tTDh3WTNVZjZ3TmQ1RGZUUGc&usp=sharing');
+        query.setQuery("WHERE E LIKE '" + sector_name.split(" ")[0] +"%'");
+        query.send(handleQueryResponse);
+      }
+
+
+      function handleQueryResponse(response) {
+        if (response.isError()) {
+          alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+          return;
+        }
+        
+        var chartWidth = getWindowSize()["x"];
+        var chartHeight = getWindowSize()["y"];
+        if (chartWidth >= chartHeight * 2){
+          chartHeight *= 0.9;
+          chartWidth = chartHeight * 2;
+        }
+        else {
+          chartWidth *= 0.9;
+          chartHeight = chartWidth / 2;
+        }
+        
+        document.getElementById('chart_div').setAttribute("style","width:" + chartWidth + "px");
+        document.getElementById('chart_div').setAttribute("style","height:" + chartHeight + "px");
+        
+	      var data = response.getDataTable();
+	      var chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
+	      var options = {};
+	      options['state'] = '{"duration":{"multiplier":1,"timeUnit":"Y"},"nonSelectedAlpha":0.4,"yZoomedIn":false,"xLambda":1,"colorOption":"8","yZoomedDataMax":36.497391,"sizeOption":"6","iconKeySettings":[],"xZoomedDataMax":-75.997744,"playDuration":10.0,"xZoomedDataMin":-84.009698,"orderedByY":false,"iconType":"BUBBLE","dimensions":{"iconDimensions":["dim0"]},"xAxisOption":"2","yZoomedDataMin":34.024762,"yAxisOption":"3","yLambda":1,"time":"1990","orderedByX":false,"xZoomedIn":false,"uniColorForNonSelected":false,"showTrails":true}';
+
+        options['showChartButtons'] = false;
+        options['showXMetricPicker'] = false;
+        options['showYMetricPicker'] = false;
+        options['showXScalePicker'] = false;
+        options['showYScalePicker'] = false;
+        options['width'] = chartWidth;
+        options['height'] = chartHeight;
+
+
+        chart.draw(data, options);
+      }
+      
+    function resizeFunc() {
+    // http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-or-resize-event-and-only-then-perform-an-ac
+      rtime = new Date();
+      if (timeout === false) {
+        timeout = true;
+        setTimeout(resizeend, delta);
+      }
+    }
+
+    function resizeend() {
+      if (new Date() - rtime < delta) {
+        setTimeout(resizeend, delta);
+      } else {
+        timeout = false;
+        //alert('Done resizing');
+        drawChart();
+      }               
+    }
+    
+	  function getURLVars() {
+	      // http://papermashup.com/read-url-get-variables-withjavascript/
+	      var vars = {};
+	      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+	          vars[key] = value;
+	      });
+
+	      return vars;
+	  }
+
+    function getWindowSize(){
+      var w = window, d = document, e = d.documentElement, g = d.getElementsByTagName('body')[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      //alert(x);
+      var result = {};
+      result["x"] = x;
+      result["y"] = y;
+      return result;
+    }
+
+    </script>
+  </head>
+
+  <body>
+  <table>
+    <tr>
+      <td><div id="navigation_div"></div></td>
+      <td><div id="title_div" style="width: 1000px; height: 50px;"></div></td>
+    </tr>
+  </table>
+    <div id="chart_div" style="width: 1000px; height: 500px;"></div>
+  </body>
+</html>

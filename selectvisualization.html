@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>Visualization Selector</TITLE>
+<link rel="stylesheet" href="County_css.css" type="text/css">
+<script type="text/javascript">
+
+var sectors = ["Animal Production and Aquaculture",
+               "Crop Production",
+               "Financial Investment & Related Activity",
+               "Forestry and Logging",
+               "Furniture and Related Product Mfg",
+               "Hospitals",
+               "Insurance Carriers & Related Activities",
+               "Internet Publishing and Broadcasting",
+               "Motion Picture & Sound Recording Ind",
+               "Paper Manufacturing",
+               "Performing Arts and Spectator Sports",
+               "Petroleum & Coal Products Manufacturing",
+               "Telecommunications",
+               "Textile Mills"];
+
+
+var counties = ["Alamance",
+                "Alexander",
+                "Alleghany",
+                "Anson",
+                "Ashe",
+                "Avery",
+                "Beaufort",
+                "Bertie",
+                "Bladen",
+                "Brunswick",
+                "Buncombe",
+                "Burke",
+                "Cabarrus",
+                "Caldwell",
+                "Camden",
+                "Carteret",
+                "Caswell",
+                "Catawba",
+                "Chatham",
+                "Cherokee",
+                "Chowan",
+                "Clay",
+                "Cleveland",
+                "Columbus",
+                "Craven",
+                "Cumberland",
+                "Currituck",
+                "Dare",
+                "Davidson",
+                "Davie",
+                "Duplin",
+                "Durham",
+                "Edgecombe",
+                "Forsyth",
+                "Franklin",
+                "Gaston",
+                "Gates",
+                "Graham",
+                "Granville",
+                "Greene",
+                "Guilford",
+                "Halifax",
+                "Harnett",
+                "Haywood",
+                "Henderson",
+                "Hertford",
+                "Hoke",
+                "Hyde",
+                "Iredell",
+                "Jackson",
+                "Johnston",
+                "Jones",
+                "Lee",
+                "Lenoir",
+                "Lincoln",
+                "Macon",
+                "Madison",
+                "Martin",
+                "McDowell",
+                "Mecklenburg",
+                "Mitchell",
+                "Montgomery",
+                "Moore",
+                "Nash",
+                "New Hanover",
+                "Northampton",
+                "Onslow",
+                "Orange",
+                "Pamlico",
+                "Pasquotank",
+                "Pender",
+                "Perquimans",
+                "Person",
+                "Pitt",
+                "Polk",
+                "Randolph",
+                "Richmond",
+                "Robeson",
+                "Rockingham",
+                "Rowan",
+                "Rutherford",
+                "Sampson",
+                "Scotland",
+                "Stanly",
+                "Stokes",
+                "Surry",
+                "Swain",
+                "Transylvania",
+                "Tyrrell",
+                "Union",
+                "Vance",
+                "Wake",
+                "Warren",
+                "Washington",
+                "Watauga",
+                "Wayne",
+                "Wilkes",
+                "Wilson",
+                "Yadkin",
+                "Yancey"];
+
+function buildTables(){
+  var maxcol = 3;
+  var tableHTML = "<table align='center' valign='center'>";
+  for (var row=0; row<5; row++){
+    tableHTML += "<tr>";
+    for (var col=0; col<maxcol; col++){
+      tableHTML += "<td>";
+      if(row*maxcol+col < sectors.length)
+        tableHTML += "<button onclick=selectSector('" + (sectors[row*maxcol+col]).replace(/ /g, "_").replace("&","and") + "')>" + sectors[row*maxcol+col] + "</button>";
+      tableHTML += "</td>";
+    }
+
+    tableHTML += "</tr>";
+  }
+  tableHTML += "</table>";
+  document.getElementById("state_sectors").innerHTML = tableHTML;
+  
+  maxcol = 8;
+  var tableHTML = "<table align='center' valign='center'>";
+  for (var row=0; row<13; row++){
+    tableHTML += "<tr>";
+    for (var col=0; col<maxcol; col++){
+      tableHTML += "<td>";
+      if(row*maxcol+col < counties.length)
+        tableHTML += "<button onclick=selectCounty('" + counties[row*maxcol+col] + "')>" + counties[row*maxcol+col] + "</button>";
+      tableHTML += "</td>";
+    }
+
+    tableHTML += "</tr>";
+  }
+  tableHTML += "</table>";
+  document.getElementById("county_selector").innerHTML = tableHTML;
+ }
+
+ function selectSector(sector){
+   //alert(sector);
+   var new_url = "stateemploymentdata.html?sector=" + sector;
+   window.location.assign(new_url);
+ }
+ 
+ function selectCounty(county){
+   //alert(county);
+   var new_url = "countyemploymentdata.html?county=" + county;
+   window.location.assign(new_url);
+ }
+</script>
+</HEAD>
+
+<BODY onload="buildTables()">
+<h2>Visualization 1: Pick a NAICS industry subsector to view statewide employment trends in NC</h2>
+<div id="state_sectors"></div>
+<h2>Visualization 2: Select a North Carolina county to view local employment trends</h2>
+<div id="county_selector"></div>
+
+</BODY>
+</HTML>
